@@ -25,7 +25,7 @@ style = "bold bright-cyan"
 read_only = " 󰌾"
 truncation_length = 4
 truncate_to_repo = true
-format = " [ $path]($style)[$read_only]($read_only_style)"
+format = " [\uf07c $path]($style)[$read_only]($read_only_style)"
 
 [character]
 success_symbol = "[❯](bold green)"
@@ -33,12 +33,12 @@ error_symbol = "[❯](bold red)"
 vimcmd_symbol = "[❮](bold yellow)"
 
 [git_branch]
-symbol = " "
+symbol = "\ue725 "
 style = "bold purple"
 format = " [$symbol$branch(:$remote_branch)]($style)"
 
 [git_commit]
-tag_symbol = "  "
+tag_symbol = " \uf02b "
 style = "dimmed white"
 
 [git_status]
@@ -57,7 +57,7 @@ deleted = "✘${count}"
 [cmd_duration]
 min_time = 2000
 style = "dimmed yellow"
-format = " [ $duration]($style)"
+format = " [\uf252 $duration]($style)"
 
 [time]
 disabled = false
@@ -66,7 +66,7 @@ format = "[$time]($style)"
 time_format = "%H:%M"
 
 [nodejs]
-symbol = " "
+symbol = "\ue718 "
 style = "bold green"
 format = " [$symbol($version)]($style)"
 
@@ -75,25 +75,25 @@ symbol = "🥟 "
 format = " [$symbol($version)]($style)"
 
 [python]
-symbol = " "
+symbol = "\ue73c "
 style = "bold yellow"
 format = " [$symbol($version)(\\($virtualenv\\))]($style)"
 
 [golang]
-symbol = " "
+symbol = "\ue627 "
 style = "bold cyan"
 format = " [$symbol($version)]($style)"
 
 [rust]
-symbol = " "
+symbol = "\ue7a8 "
 style = "bold red"
 format = " [$symbol($version)]($style)"
 
 [ruby]
-symbol = " "
+symbol = "\ue739 "
 style = "bold red"
 format = " [$symbol($version)]($style)"
 
 [docker_context]
-symbol = " "
+symbol = "\ue7b0 "
 format = " [$symbol$context]($style)"
