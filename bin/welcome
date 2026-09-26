@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# terminal welcome screen (github.com/h1n054ur/h1n054ur-terminal)
+# terminal welcome screen, works on bash 3.2+ (macOS) and bash 5 (github.com/h1n054ur/h1n054ur-terminal)
 #   welcome            random effect
 #   welcome <effect>   force one effect (welcome --list shows them)
 set -u
@@ -10,31 +10,33 @@ G='\e[1;32m'; C='\e[1;36m'; W='\e[1;37m'; D='\e[2;37m'; R='\e[0m'
 
 GRAD="39ff14 00e5ff"
 FIN="--final-gradient-stops $GRAD --final-gradient-direction horizontal"
-declare -A EFFECTS=(
-  [matrix]="90|matrix --rain-time 2 $FIN"
-  [rain]="75|rain $FIN"
-  [decrypt]="200|decrypt --typing-speed 10 $FIN"
-  [beams]="100|beams $FIN"
-  [burn]="120|burn $FIN"
-  [unstable]="75|unstable $FIN"
-  [synthgrid]="60|synthgrid --text-gradient-stops $GRAD --text-gradient-direction horizontal"
-  [slide]="60|slide $FIN"
-  [vhstape]="180|vhstape $FIN"
-  [laseretch]="240|laseretch $FIN"
-)
+EFFECTS="beams burn decrypt laseretch matrix rain slide synthgrid unstable vhstape"
+effect_cmd() {  # prints "<fps>|<tte args>" for an effect name
+  case $1 in
+    matrix)    echo "90|matrix --rain-time 2 $FIN" ;;
+    rain)      echo "75|rain $FIN" ;;
+    decrypt)   echo "200|decrypt --typing-speed 10 $FIN" ;;
+    beams)     echo "100|beams $FIN" ;;
+    burn)      echo "120|burn $FIN" ;;
+    unstable)  echo "75|unstable $FIN" ;;
+    synthgrid) echo "60|synthgrid --text-gradient-stops $GRAD --text-gradient-direction horizontal" ;;
+    slide)     echo "60|slide $FIN" ;;
+    vhstape)   echo "180|vhstape $FIN" ;;
+    laseretch) echo "240|laseretch $FIN" ;;
+  esac
+}
 
-if [[ ${1:-} == --list ]]; then printf '%s\n' "${!EFFECTS[@]}" | sort; exit 0; fi
-if [[ -n ${1:-} && -z ${EFFECTS[$1]:-} ]]; then echo "unknown effect: $1 (see welcome --list)" >&2; exit 1; fi
+if [ "${1:-}" = --list ]; then printf '%s\n' $EFFECTS; exit 0; fi
+if [ -n "${1:-}" ] && [ -z "$(effect_cmd "$1")" ]; then echo "unknown effect: $1 (see welcome --list)" >&2; exit 1; fi
 
-names=("${!EFFECTS[@]}")
-pick=${1:-${names[RANDOM % ${#names[@]}]}}
+if [ -n "${1:-}" ]; then pick=$1; else set -- $EFFECTS; eval "pick=\${$((RANDOM % $# + 1))}"; fi
+spec=$(effect_cmd "$pick"); fps=${spec%%|*}; args=${spec#*|}
 
 static_banner() { lolcat -f -S 12 < "$BANNER"; }
 
 clear
 tput civis
 trap 'tput cnorm; stty sane 2>/dev/null; clear; static_banner' INT
-fps=${EFFECTS[$pick]%%|*}; args=${EFFECTS[$pick]#*|}
 if ! tte -i "$BANNER" --frame-rate "$fps" $args 2>/dev/null; then
   clear; static_banner
 fi

@@ -16,8 +16,8 @@ Add-Type -Name Gdi -Namespace W -MemberDefinition '[DllImport("gdi32.dll")] publ
 Write-Host '==> installing (per-user)'
 Get-ChildItem "$tmp\CaskaydiaCoveNerdFont*-Regular.ttf", "$tmp\CaskaydiaCoveNerdFont*-Bold.ttf", "$tmp\CaskaydiaCoveNerdFont*-Italic.ttf", "$tmp\CaskaydiaCoveNerdFont*-BoldItalic.ttf" |
   Where-Object { $_.BaseName -notmatch 'Propo' } | ForEach-Object {
-    Copy-Item $_.FullName $fontDir -Force
     $dst = Join-Path $fontDir $_.Name
+    if (-not (Test-Path $dst)) { Copy-Item $_.FullName $dst }
     $pfc = New-Object System.Drawing.Text.PrivateFontCollection
     $pfc.AddFontFile($dst)
     $style = ($_.BaseName -split '-')[1] -replace 'BoldItalic', 'Bold Italic'
