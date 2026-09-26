@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# terminal welcome screen (github.com/h1n054ur/h1n054ur-terminal)
+#   welcome            random effect
+#   welcome <effect>   force one effect (welcome --list shows them)
+set -u
+BANNER="$HOME/.config/welcome/banner.txt"
+HANDLE=$(cat "$HOME/.config/welcome/handle" 2>/dev/null || echo "$USER")
+FF_CFG="$HOME/.config/fastfetch/welcome.jsonc"
+G='\e[1;32m'; C='\e[1;36m'; W='\e[1;37m'; D='\e[2;37m'; R='\e[0m'
+
+GRAD="39ff14 00e5ff"
+FIN="--final-gradient-stops $GRAD --final-gradient-direction horizontal"
+declare -A EFFECTS=(
+  [matrix]="90|matrix --rain-time 2 $FIN"
+  [rain]="75|rain $FIN"
+  [decrypt]="200|decrypt --typing-speed 10 $FIN"
+  [beams]="100|beams $FIN"
+  [burn]="120|burn $FIN"
+  [unstable]="75|unstable $FIN"
+  [synthgrid]="60|synthgrid --text-gradient-stops $GRAD --text-gradient-direction horizontal"
+  [slide]="60|slide $FIN"
+  [vhstape]="180|vhstape $FIN"
+  [laseretch]="240|laseretch $FIN"
+)
+
+if [[ ${1:-} == --list ]]; then printf '%s\n' "${!EFFECTS[@]}" | sort; exit 0; fi
+if [[ -n ${1:-} && -z ${EFFECTS[$1]:-} ]]; then echo "unknown effect: $1 (see welcome --list)" >&2; exit 1; fi
+
+names=("${!EFFECTS[@]}")
+pick=${1:-${names[RANDOM % ${#names[@]}]}}
+
+static_banner() { lolcat -f -S 12 < "$BANNER"; }
+
+clear
+tput civis
+trap 'tput cnorm; stty sane 2>/dev/null; clear; static_banner' INT
+fps=${EFFECTS[$pick]%%|*}; args=${EFFECTS[$pick]#*|}
+if ! tte -i "$BANNER" --frame-rate "$fps" $args 2>/dev/null; then
+  clear; static_banner
+fi
+trap - INT
+tput cnorm
+
+echo
+fastfetch --config "$FF_CFG"
+
+tips=(
+  "the quieter you become, the more you are able to hear"
+  "talk is cheap. show me the code"
+  "there is no patch for human stupidity"
+  "rm -rf fear/"
+  "every system has a backdoor. it is usually a human"
+  "ship it, then harden it"
+  "security through obscurity is not security"
+  "sudo make me a sandwich"
+  "if it works, you have not tested it enough"
+  "logs or it did not happen"
+)
+tip=${tips[RANDOM % ${#tips[@]}]}
+printf "\n ${G}[ ACCESS GRANTED ]${R} ${W}${HANDLE}${D}@${W}$(hostname)${R}  ${D}▸${R}  ${C}effect:${R} ${pick}  ${D}▸${R}  ${D}${tip}${R}\n\n"
