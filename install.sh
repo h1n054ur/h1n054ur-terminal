@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Installs the h1n054ur terminal: animated welcome banner, fastfetch panel, starship prompt.
 # Usage: ./install.sh [handle]      (handle defaults to your username; used for the banner)
-# Linux (apt, sudo once) and macOS (Homebrew). Hooks bash and, if it is your shell, zsh.
+# Linux (apt or dnf, sudo once) and macOS (Homebrew). Hooks bash and, if it is your shell, zsh.
 set -euo pipefail
 HERE=$(cd "$(dirname "$0")" && pwd)
 HANDLE=${1:-$USER}
@@ -9,12 +9,14 @@ FF_VER=2.69.0
 
 say() { printf '\033[1;32m==>\033[0m %s\n' "$*"; }
 
+mkdir -p "$HOME/.local/bin" "$HOME/.config/welcome" "$HOME/.config/fastfetch"
+
 if command -v brew >/dev/null; then
   say "brew: figlet lolcat cmatrix fastfetch starship pipx"
   brew install figlet lolcat cmatrix fastfetch starship pipx
 elif command -v apt-get >/dev/null; then
   say "apt: figlet lolcat cmatrix pipx curl unzip"
-  sudo apt-get install -y figlet lolcat cmatrix pipx curl unzip
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y figlet lolcat cmatrix pipx curl unzip
   if ! command -v fastfetch >/dev/null; then
     say "fastfetch $FF_VER"
     tmp=$(mktemp -d)
@@ -26,8 +28,16 @@ elif command -v apt-get >/dev/null; then
     say "starship (user-local)"
     curl -sS https://starship.rs/install.sh | sh -s -- -y -b "$HOME/.local/bin"
   fi
+elif command -v dnf >/dev/null; then
+  say "dnf (EPEL): figlet lolcat fastfetch pipx curl unzip"
+  sudo dnf install -y epel-release
+  sudo dnf install -y figlet lolcat fastfetch pipx curl unzip
+  if ! command -v starship >/dev/null && [ ! -x "$HOME/.local/bin/starship" ]; then
+    say "starship (user-local)"
+    curl -sS https://starship.rs/install.sh | sh -s -- -y -b "$HOME/.local/bin"
+  fi
 else
-  echo "need Homebrew or apt-get" >&2; exit 1
+  echo "need Homebrew, apt-get or dnf" >&2; exit 1
 fi
 
 say "terminaltexteffects + pyfiglet (pipx, user-local)"
@@ -35,7 +45,6 @@ pipx install terminaltexteffects >/dev/null 2>&1 || pipx upgrade terminaltexteff
 pipx install pyfiglet >/dev/null 2>&1 || true
 
 say "configs"
-mkdir -p "$HOME/.local/bin" "$HOME/.config/welcome" "$HOME/.config/fastfetch"
 install -m 755 "$HERE/bin/welcome" "$HOME/.local/bin/welcome"
 install -m 644 "$HERE/config/fastfetch/welcome.jsonc" "$HOME/.config/fastfetch/welcome.jsonc"
 if [ "$(uname)" = Darwin ]; then

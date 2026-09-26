@@ -37,7 +37,7 @@ Plus rain, unstable, synthgrid and slide.
 
 ## Install
 
-Linux (apt) or macOS (Homebrew):
+Linux (apt, or dnf with EPEL on Rocky, Alma and RHEL) or macOS (Homebrew):
 
 ```bash
 git clone https://github.com/h1n054ur/h1n054ur-terminal.git
@@ -45,7 +45,7 @@ cd h1n054ur-terminal
 ./install.sh yourhandle
 ```
 
-Installs figlet, lolcat, cmatrix and fastfetch from your package manager, `tte` and `pyfiglet` user-local through pipx, starship user-local. Appends one marked block to `~/.bashrc`, and to `~/.zshrc` when zsh is your login shell. Nothing else is touched.
+Installs figlet, lolcat, cmatrix (not on dnf: EPEL has no package) and fastfetch from your package manager, `tte` and `pyfiglet` user-local through pipx, starship user-local. Appends one marked block to `~/.bashrc`, and to `~/.zshrc` when zsh is your login shell. Nothing else is touched.
 
 Windows (PowerShell, no admin needed):
 
@@ -66,7 +66,7 @@ WSL users want both: the Linux install inside the distro and the Windows install
 | `welcome` | replay with a random effect |
 | `welcome matrix` | force one effect |
 | `welcome --list` (`-List` on PowerShell) | list effects |
-| `matrix` | cmatrix screensaver, `q` to quit (Linux and macOS) |
+| `matrix` | cmatrix screensaver, `q` to quit (Linux and macOS, not on dnf systems) |
 | `WELCOME_OFF=1` | set in the environment to disable the welcome screen |
 
 The welcome screen runs once per shell: nested shells, tmux panes and non-interactive shells stay quiet. It also skips terminals narrower than 70 columns.
