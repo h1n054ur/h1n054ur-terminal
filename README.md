@@ -59,6 +59,22 @@ Installs PowerShell 7, starship, fastfetch and Python through winget, `tte` and 
 
 WSL users want both: the Linux install inside the distro and the Windows install for the font and the host side.
 
+## Over SSH
+
+Install it once on the server. Anyone who connects gets it, with nothing to install on their machine: the animation, the panel and the prompt all run server-side, and the client terminal only draws the output.
+
+What the client terminal decides:
+
+| | needed for | if missing |
+|---|---|---|
+| Truecolor (24-bit) | gradients, effect colors | colors fall back to the nearest match |
+| Nerd Font | icons in the panel and prompt | icons render as empty boxes, everything else is fine |
+| 70+ columns | the welcome screen | welcome skips itself, the prompt still loads |
+
+Windows Terminal (the default on Windows 11), iTerm2, WezTerm, Ghostty, Kitty, Alacritty and GNOME Terminal all do truecolor out of the box. So from a stock Windows laptop, `ssh user@server` in Windows Terminal gives you the full animated banner, panel and prompt with no setup. The one thing a stock laptop lacks is a Nerd Font, so the icons show as boxes until you run `windows/install-nerd-font.ps1` (or install any Nerd Font and select it in your terminal).
+
+The welcome screen is tied to the account's shell rc file, so it shows for users whose account ran the installer.
+
 ## Use
 
 | command | |
