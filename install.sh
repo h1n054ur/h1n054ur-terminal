@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Installs the h1n054ur terminal: animated welcome banner, fastfetch panel, starship prompt.
 # Usage: ./install.sh [handle]      (handle defaults to your username; used for the banner)
-# Linux (apt or dnf, sudo once) and macOS (Homebrew). Hooks bash and, if it is your shell, zsh.
+# Linux (apt, dnf or pacman, sudo once) and macOS (Homebrew). Hooks bash and, if it is your shell, zsh.
 set -euo pipefail
 HERE=$(cd "$(dirname "$0")" && pwd)
 HANDLE=${1:-$USER}
@@ -36,8 +36,11 @@ elif command -v dnf >/dev/null; then
     say "starship (user-local)"
     curl -sS https://starship.rs/install.sh | sh -s -- -y -b "$HOME/.local/bin"
   fi
+elif command -v pacman >/dev/null; then
+  say "pacman: figlet lolcat cmatrix fastfetch starship python-pipx curl unzip"
+  sudo pacman -S --needed --noconfirm figlet lolcat cmatrix fastfetch starship python-pipx curl unzip
 else
-  echo "need Homebrew, apt-get or dnf" >&2; exit 1
+  echo "need Homebrew, apt-get, dnf or pacman" >&2; exit 1
 fi
 
 say "terminaltexteffects + pyfiglet (pipx, user-local)"

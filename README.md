@@ -37,7 +37,7 @@ Plus rain, unstable, synthgrid and slide.
 
 ## Install
 
-Linux (apt, or dnf with EPEL on Rocky, Alma and RHEL) or macOS (Homebrew):
+Linux (apt; dnf with EPEL on Rocky, Alma and RHEL; pacman on Arch and CachyOS) or macOS (Homebrew):
 
 ```bash
 git clone https://github.com/h1n054ur/h1n054ur-terminal.git
